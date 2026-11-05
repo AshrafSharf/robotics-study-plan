@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A 10-week, five-subject robotics study timetable: electronics, maths, CAD, ROS 2 and hands-on labs.">
+<meta name="theme-color" content="#1d2129">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%A4%96%3C/text%3E%3C/svg%3E">
+<title>Robotics 10-Week Timetable</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<style>
+:root{
+  --bg:#f5f4ef; --panel:#fff; --ink:#1d2129; --muted:#5a6170; --line:#d9d6cc; --chip:#eceae3;
+  --accent:#2f6fde; --ok:#1f9d6b; --warn:#c7811c;
+  --E:#d9572f; --M:#7350d0; --C:#2f9a5c; --S:#2a84cc; --L:#c99410; --W:#c93f80;
+  --Et:#fbe5dc; --Mt:#ebe4fb; --Ct:#dcf2e5; --St:#dcebf9; --Lt:#f7edd0; --Wt:#f8dde9;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#13151a; --panel:#1c1f26; --ink:#e8eaef; --muted:#a0a8b6; --line:#323743; --chip:#272b34; --accent:#78a8ff;
+  --E:#ff8a63; --M:#a88cff; --C:#5cc98a; --S:#5fb2f5; --L:#e8b93d; --W:#f07ab0;
+  --Et:#3a2620; --Mt:#2b2540; --Ct:#1d3327; --St:#1b2c3d; --Lt:#38301c; --Wt:#3a2030;}}
+:root[data-theme="dark"]{
+  --bg:#13151a; --panel:#1c1f26; --ink:#e8eaef; --muted:#a0a8b6; --line:#323743; --chip:#272b34; --accent:#78a8ff;
+  --E:#ff8a63; --M:#a88cff; --C:#5cc98a; --S:#5fb2f5; --L:#e8b93d; --W:#f07ab0;
+  --Et:#3a2620; --Mt:#2b2540; --Ct:#1d3327; --St:#1b2c3d; --Lt:#38301c; --Wt:#3a2030;}
+*{box-sizing:border-box}
+html{font-size:17px}
+body{margin:0;background:var(--bg);color:var(--ink);font:1rem/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+.wrap{max-width:1280px;margin:0 auto;padding:28px 16px 90px}
+h1{font-size:2.1rem;line-height:1.2;margin:0 0 8px}
+.lede{color:var(--muted);margin:0 0 14px;max-width:880px;font-size:1.08rem}
+.top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.btn{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px 14px;cursor:pointer;font:inherit;font-size:.95rem}
+.btn:hover{border-color:var(--ink)}
+.btn.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;margin:22px 0}
+.card>h2{margin:0 0 6px;font-size:1.5rem}
+.sub{color:var(--muted);margin:0 0 16px;font-size:.98rem}
+.scroll{overflow-x:auto}
+.progress{height:10px;background:var(--chip);border-radius:6px;overflow:hidden;margin:10px 0 4px}
+.progress>div{height:100%;background:var(--ok);width:0;transition:width .3s}
+.small{font-size:.9rem;color:var(--muted)}
+svg text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.lane-hit{cursor:pointer}
+/* tabs */
+.weeks{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));margin-bottom:16px}
+.weeks .btn{text-align:left;line-height:1.3;padding:10px 12px}
+.weeks .btn b{display:block;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;opacity:.75}
+.wkhead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;margin:4px 0 14px}
+.wkhead h2{margin:0;font-size:1.7rem}
+.days{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.days .btn{min-width:92px;font-weight:600}
+.days .btn small{display:block;font-weight:400;font-size:.78rem;opacity:.8}
+.days .btn.today{box-shadow:0 0 0 2px var(--ok) inset}
+/* period cards */
+.pc{display:grid;grid-template-columns:300px 1fr;gap:22px;background:var(--panel);border:1px solid var(--line);border-left:8px solid var(--c);border-radius:16px;padding:18px;margin:14px 0;scroll-margin-top:16px}
+.pc.done{opacity:.6}
+.pc .fig{background:var(--t);border-radius:12px;display:flex;align-items:center;justify-content:center;padding:8px}
+.pc .fig svg{width:100%;height:auto;max-height:210px}
+.pc .meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:.92rem}
+.pill{background:var(--c);color:#fff;border-radius:8px;padding:2px 10px;font-weight:700;font-size:.85rem}
+.pc h3{font-size:1.4rem;line-height:1.3;margin:6px 0 10px}
+.tex{background:var(--t);border-radius:10px;padding:10px 14px;margin:0 0 12px;overflow-x:auto;font-size:1.12rem}
+.tex .katex-display{margin:.2em 0}
+.how{margin:0 0 10px;font-size:1.05rem}
+.how b{color:var(--c)}
+.refline{font-size:.92rem;color:var(--muted);margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chips span{background:var(--chip);border-radius:20px;padding:4px 12px;font-size:.9rem;color:var(--muted)}
+.chips a{background:var(--chip);border-radius:20px;padding:4px 12px;font-size:.9rem}
+.donebtn{display:inline-flex;gap:8px;align-items:center;font-weight:600;cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:7px 14px;background:var(--bg)}
+.donebtn input{width:18px;height:18px;accent-color:var(--ok)}
+.lunch{display:flex;align-items:center;gap:12px;color:var(--muted);margin:6px 4px;font-size:.95rem}
+.lunch:before,.lunch:after{content:"";flex:1;border-top:2px dashed var(--line)}
+@media (max-width:820px){.pc{grid-template-columns:1fr}.pc .fig svg{max-height:180px}}
+/* workshop */
+.ws{--c:var(--W);--t:var(--Wt)}
+.ws ol{margin:6px 0 12px;padding-left:22px;font-size:1.05rem}
+/* week grid */
+table.tt{border-collapse:separate;border-spacing:6px;width:100%;min-width:980px;table-layout:fixed}
+table.tt th{font-size:.9rem;color:var(--muted);font-weight:600;text-align:left;padding:2px 4px}
+table.tt th.cur{color:var(--ink)}
+table.tt td.per{width:150px;font-size:.85rem;color:var(--muted);vertical-align:top;padding:6px 4px}
+table.tt td.per b{display:block;color:var(--ink);font-size:.92rem}
+.cell{background:var(--t);border-left:4px solid var(--c);border-radius:8px;padding:8px 9px;font-size:.88rem;line-height:1.35;vertical-align:top;cursor:pointer}
+.cell:hover{outline:2px solid var(--c)}
+.cell.done{opacity:.45;text-decoration:line-through}
+.cell.curday{box-shadow:0 0 0 2px var(--ink) inset}
+.cell.wsc{--c:var(--W);--t:var(--Wt);font-weight:600}
+/* misc */
+.rescols{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.rescols>div{border-top:5px solid var(--c);background:var(--bg);border-radius:10px;padding:12px 14px}
+.rescols h3{margin:0 0 6px;font-size:1rem}
+.rescols ul{margin:0;padding-left:18px;font-size:.95rem}
+.grid3{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+.grid3>div{background:var(--bg);border-radius:14px;padding:16px;font-size:1rem}
+.grid3 b{display:block;margin-bottom:6px;font-size:1.08rem}
+.grid3 svg{width:100%;height:auto;max-height:150px;display:block;margin-bottom:8px;background:var(--chip);border-radius:10px}
+table.plain{border-collapse:collapse;width:100%;min-width:560px;font-size:1rem}
+table.plain th,table.plain td{border-top:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+table.plain th{color:var(--muted);font-weight:600;border-top:0}
+.wkchip{display:inline-block;background:var(--chip);border-radius:6px;padding:1px 8px;font-weight:600}
+input[type=date]{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+.phone-only{display:none;font-weight:600;color:var(--ink)}
+@media (max-width:820px){.phone-only{display:inline}}
+.callout{border-left:5px solid var(--warn);background:var(--chip);padding:10px 14px;border-radius:8px;margin:14px 0 0}
+@media (max-width:600px){
+  html{font-size:16px}
+  .wrap{padding:16px 12px 70px}
+  h1{font-size:1.6rem}
+  .card{padding:16px;border-radius:14px}
+  .pc{padding:12px;gap:12px;border-left-width:6px}
+  .pc h3{font-size:1.2rem}
+  .tex{font-size:1rem;padding:8px 10px}
+  .weeks{grid-template-columns:repeat(2,1fr)}
+  .days .btn{min-width:0;flex:1 1 28%;padding:8px 6px}
+  .wkhead h2{font-size:1.35rem}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>Robotics in 10 weeks: one school day, five subjects</h1>
+      <p class="lede">Every weekday has five periods (Electronics, Maths, Mechanical/CAD, Software/ROS 2 and a Lab), so all five subjects move forward together. On Saturday the week's subjects come together in one build. The maths is applied: what a formula means, then computing and checking it in Python.</p>
+    </div>
+    <button class="btn" id="themeBtn">◐ Theme</button>
+  </div>
+  <div class="progress"><div id="totalBar"></div></div>
+  <div class="small" id="totalTxt"></div>
+
+  <div class="card">
+    <h2>The ten weeks at a glance</h2>
+    <p class="sub">Read down a column to see what you study in parallel. Read along a row to see one subject grow. Each pink diamond is the Saturday build. Click a week to open it. <span class="phone-only">Swipe sideways to see all ten weeks.</span></p>
+    <div class="scroll"><svg id="lanes" viewBox="0 0 1420 700" width="100%" style="min-width:1150px" role="img" aria-label="Five parallel subject lanes across ten weeks"></svg></div>
+  </div>
+
+  <div class="card" id="ttcard">
+    <div class="weeks" id="weekTabs"></div>
+    <div class="wkhead"><h2 id="wkTitle"></h2>
+      <label class="small">Start date (Monday of week 1): <input type="date" id="start"></label></div>
+    <div class="days" id="dayTabs"></div>
+    <div id="dayView"></div>
+    <h2 style="font-size:1.25rem;margin:28px 0 6px">This week on one page</h2>
+    <p class="sub">Click a cell to open that day. <span class="phone-only">Swipe sideways for Tuesday to Saturday.</span></p>
+    <div class="scroll"><table class="tt" id="tt"></table></div>
+    <h2 style="font-size:1.25rem;margin:24px 0 10px">This week's resources by subject</h2>
+    <div class="rescols" id="res"></div>
+  </div>
+
+  <div class="card">
+    <h2>The school day</h2>
+    <p class="sub">About 5.5 hours, Monday to Friday. Saturday is the workshop; Sunday is off.</p>
+    <div class="scroll"><svg id="bells" viewBox="0 0 1000 170" width="100%" style="min-width:720px" role="img" aria-label="Daily timetable from 08:00 to 15:15"></svg></div>
+    <div class="callout">10 weeks × 6 days × about 5.5 h comes to roughly 330 hours. The time saved against the six-month plan comes from running the subjects in parallel, and from simulating anything whose hardware has not arrived yet.</div>
+  </div>
+
+  <div class="card">
+    <h2>How each maths period runs</h2>
+    <p class="sub">Application first. Each period has three steps, and none of them is a derivation.</p>
+    <div class="grid3" id="mathsteps"></div>
+  </div>
+
+  <div class="card">
+    <h2>Shopping list: order in week 1</h2>
+    <p class="sub">Order the first items from Amazon or Elegoo so they arrive within days. The "Needed" column shows the week each item is first used.</p>
+    <div class="scroll"><table class="plain" id="shop"></table></div>
+  </div>
+
+  <div class="card">
+    <h2>Rules that make the parallel plan work</h2>
+    <div class="grid3">
+      <div><b>Each subject feeds the lab</b>In week 5, the line sensors from Electronics, the PD control from Maths and the printed mount from CAD all go into Saturday's line follower.</div>
+      <div><b>One repo per weekly build</b>A photo or video, a wiring diagram, measured numbers, and a section titled "What broke and how I fixed it".</div>
+      <div><b>Maths = Stream A, Software = Stream B</b>The maths period goes with <code>lessons/day-N/</code>; the software period goes with <code>lessons/day-N/ros/</code>.</div>
+      <div><b>Fall behind? Drop a period, not a day</b>Move the unfinished period to Saturday morning, and keep the five subjects in step with each other.</div>
+      <div><b>Stuck for 30 minutes?</b>Write down the symptom, what you expected and what you measured, then ask. That note goes in the README too.</div>
+      <div><b>Full link library</b>All 114 resources, in the original month order, are in the <a href="library.html">resource library</a>.</div>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="figs.js"></script>
+<script src="tex.js"></script>
+<script>
+const NW=W.length, KEYS=["E","M","C","S","L"];
+const BUILD_FIG=["meter","mosfet","arduino","encoder","robot","balancer","arm2r","gazebo","map","policy"];
+const KEY="robo-10wk-v1"; let st={};
+try{st=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){st={}}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const tex=s=>{try{return katex.renderToString(s,{displayMode:true,throwOnError:false})}catch(e){return `<code>${esc(s)}</code>`}};
+document.getElementById("themeBtn").onclick=()=>{const r=document.documentElement;
+  const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches; r.dataset.theme=dark?"light":"dark";};
+
+function todayPos(){
+  if(!st.start)return null; const s=new Date(st.start+"T00:00"), n=new Date(); n.setHours(0,0,0,0);
+  const d=Math.round((n-s)/864e5); if(d<0||d>=NW*7)return null; const w=Math.floor(d/7),dd=d%7; return dd===6?null:{w,d:dd};
+}
+function dateOf(w,d){if(!st.start)return "";const s=new Date(st.start+"T00:00");s.setDate(s.getDate()+w*7+d);return s.toLocaleDateString(undefined,{day:"numeric",month:"short"});}
+const startEl=document.getElementById("start"); if(st.start)startEl.value=st.start;
+startEl.onchange=()=>{st.start=startEl.value;save();const t=todayPos();if(t){cur=t.w;day=t.d;}render();};
+
+const t0=todayPos(); let cur=t0?t0.w:Math.min(st.week||0,NW-1), day=t0?t0.d:(st.day||0);
+
+function render(){
+  st.week=cur; st.day=day; save();
+  const w=W[cur], tp=todayPos();
+  document.getElementById("weekTabs").innerHTML=W.map((x,i)=>`<button class="btn${i===cur?" on":""}" data-w="${i}"><b>Week ${i+1}</b>${esc(x.name)}</button>`).join("");
+  document.getElementById("wkTitle").textContent=`Week ${cur+1}: ${w.name}`;
+  document.getElementById("dayTabs").innerHTML=DAYS.map((d,i)=>`<button class="btn${i===day?" on":""}${tp&&tp.w===cur&&tp.d===i?" today":""}" data-d="${i}">${d}${i===5?" · Workshop":""}<small>${dateOf(cur,i)||(i===5?"build day":"5 periods")}</small></button>`).join("");
+  renderDay(); renderGrid(); renderRes(); drawLanes(); refresh();
+}
+const LOCAL=["localhost","127.0.0.1",""].includes(location.hostname);
+/* Book PDFs live only in the local workspace; on the public site show them as plain labels. */
+function linkHTML(x){const [name,url]=LK[x];if(url.startsWith("../books/")&&!LOCAL)return `<span title="Local textbook PDF">📘 ${esc(name)}</span>`;return `<a href="${url}" target="_blank" rel="noopener">${esc(name)}</a>`;}
+function linksFor(k){return (W[cur].res[k]||[]).filter(x=>LK[x]).map(linkHTML).join("");}
+function renderDay(){
+  const w=W[cur], v=document.getElementById("dayView");
+  if(day===5){const id=`w${cur}ws`;
+    v.innerHTML=`<article class="pc ws${st[id]?" done":""}" style="grid-template-columns:420px 1fr">
+      <div class="fig">${FIG(BUILD_FIG[cur],"var(--W)")}</div>
+      <div><div class="meta"><span class="pill">Saturday</span> Workshop · where the week's subjects meet</div>
+      <h3>${esc(w.build)}</h3><p class="how">${esc(w.ws)}</p>
+      <ol><li>Morning: finish any periods you did not tick this week.</li><li>Build and test; log the numbers you measure.</li><li>Film a short video (15–60 s).</li><li>Write the README, including "What broke and how I fixed it".</li></ol>
+      <label class="donebtn"><input type="checkbox" data-id="${id}"${st[id]?" checked":""}> Workshop done</label></div></article>`;return;}
+  let h="";
+  KEYS.forEach((k,ri)=>{
+    const c=w[k][day], id=`w${cur}${k}${day}`, b=BELLS.find(x=>x[0]===k), tx=TEX[`${cur}${k}${day}`];
+    if(ri===3) h+=`<div class="lunch">11:30–12:30 · lunch</div>`;
+    h+=`<article class="pc${st[id]?" done":""}" id="pc-${k}" style="--c:var(--${k});--t:var(--${k}t)">
+      <div class="fig">${FIG(pickFig(c[0],k),`var(--${k})`)}</div>
+      <div><div class="meta"><span class="pill">P${ri+1}</span><span>${b[1]}</span><span>· ${TR[k]}</span></div>
+      <h3>${esc(c[0])}</h3>
+      ${tx?`<div class="tex">${tex(tx)}</div>`:""}
+      <p class="how"><b>How to do it.</b> ${esc(c[2])}</p>
+      ${c[1]?`<div class="refline">Reference: ${esc(c[1])}</div>`:""}
+      <div class="chips">${linksFor(k)}</div>
+      <label class="donebtn"><input type="checkbox" data-id="${id}"${st[id]?" checked":""}> Done</label></div></article>`;
+  });
+  v.innerHTML=h;
+}
+function renderGrid(){
+  const w=W[cur];
+  let h=`<tr><th style="width:150px">Period</th>${DAYS.map((d,i)=>`<th class="${i===day?"cur":""}">${d}</th>`).join("")}</tr>`;
+  KEYS.forEach((k,ri)=>{const b=BELLS.find(x=>x[0]===k);
+    h+=`<tr><td class="per"><b>P${ri+1} · ${TR[k]}</b>${b[1]}</td>`+w[k].map((c,di)=>`<td class="cell${st[`w${cur}${k}${di}`]?" done":""}${di===day?" curday":""}" style="--c:var(--${k});--t:var(--${k}t)" data-d="${di}" data-k="${k}">${esc(c[0])}</td>`).join("");
+    if(ri===0)h+=`<td rowspan="5" class="cell wsc${st[`w${cur}ws`]?" done":""}${day===5?" curday":""}" data-d="5">Workshop:<br>${esc(w.build)}<div style="font-weight:400;margin-top:6px">${esc(w.ws)}</div></td>`;
+    h+=`</tr>`;});
+  document.getElementById("tt").innerHTML=h;
+}
+function renderRes(){document.getElementById("res").innerHTML=KEYS.map(k=>`<div style="--c:var(--${k})"><h3>${TR[k]}</h3><ul>${(W[cur].res[k]||[]).filter(x=>LK[x]).map(x=>`<li>${linkHTML(x)}</li>`).join("")}</ul></div>`).join("");}
+
+document.getElementById("weekTabs").onclick=e=>{const b=e.target.closest("[data-w]");if(b){cur=+b.dataset.w;day=0;render();}};
+document.getElementById("dayTabs").onclick=e=>{const b=e.target.closest("[data-d]");if(b){day=+b.dataset.d;render();}};
+document.getElementById("tt").onclick=e=>{const c=e.target.closest(".cell");if(!c)return;day=+c.dataset.d;render();
+  const el=document.getElementById(c.dataset.k?`pc-${c.dataset.k}`:"dayView");if(el)el.scrollIntoView({behavior:"smooth",block:"start"});};
+document.getElementById("dayView").addEventListener("change",e=>{const id=e.target.dataset.id;if(!id)return;st[id]=e.target.checked;save();
+  e.target.closest(".pc").classList.toggle("done",e.target.checked);renderGrid();refresh();});
+
+function refresh(){
+  let d=0,t=0; const per=W.map((w,wi)=>{let a=0,n=0;KEYS.forEach(k=>w[k].forEach((_,di)=>{n++;if(st[`w${wi}${k}${di}`])a++}));n++;if(st[`w${wi}ws`])a++;d+=a;t+=n;return a/n;});
+  document.getElementById("totalBar").style.width=(100*d/t)+"%";
+  document.getElementById("totalTxt").textContent=`${d} of ${t} periods and workshops done`;
+  per.forEach((f,i)=>{const r=document.getElementById("wp"+i);if(r)r.setAttribute("width",String(116*f));});
+}
+
+/* ---------- overview swimlanes ---------- */
+function wrapText(txt,maxW,fs){const words=txt.split(" "),lines=[];let line="";
+  words.forEach(w=>{const t=line?line+" "+w:w;if(t.length*fs*.55>maxW&&line){lines.push(line);line=w}else line=t});lines.push(line);return lines;}
+function drawLanes(){
+  const x0=180,cw=124,y0=72,lh=82; let s="";
+  const tx=(x,y,str,o={})=>`<text x="${x}" y="${y}" font-size="${o.fs||15}" fill="${o.fill||"var(--ink)"}" text-anchor="${o.a||"middle"}"${o.b?' font-weight="700"':""}>${esc(str)}</text>`;
+  KEYS.forEach((k,r)=>{const y=y0+r*lh+lh/2;
+    s+=`<rect x="8" y="${y-22}" width="7" height="44" rx="3" fill="var(--${k})"/>`+tx(24,y-3,`P${r+1} ${TR[k].split(" ")[0]}`,{a:"start",b:1,fs:18})+tx(24,y+17,TR[k].split(" ").slice(1).join(" "),{a:"start",fs:14,fill:"var(--muted)"});});
+  s+=tx(24,y0+5*lh+44,"Workshop",{a:"start",b:1,fs:16,fill:"var(--W)"})+tx(24,y0+5*lh+64,"Saturday build",{a:"start",fs:13,fill:"var(--muted)"});
+  W.forEach((w,i)=>{const x=x0+i*cw, cx=x+cw/2;
+    s+=`<g class="lane-hit" data-w="${i}"><rect x="${x+2}" y="4" width="${cw-4}" height="690" rx="12" fill="${i===cur?"var(--chip)":"transparent"}" stroke="${i===cur?"var(--ink)":"none"}" stroke-width="1.5"/>`;
+    s+=tx(cx,28,`Week ${i+1}`,{b:1,fs:18});
+    wrapText(w.name,cw-10,13.5).forEach((l,j)=>s+=tx(cx,48+j*16,l,{fs:13.5,fill:"var(--muted)"}));
+    KEYS.forEach((k,r)=>{const y=y0+r*lh+8,ls=wrapText(w.lane[k],cw-16,15);
+      s+=`<rect x="${x+6}" y="${y}" width="${cw-12}" height="${lh-12}" rx="9" fill="var(--${k}t)" stroke="var(--${k})" stroke-width="1.2"/>`;
+      ls.forEach((l,j)=>s+=tx(cx,y+(lh-12)/2+5+(j-(ls.length-1)/2)*18,l,{fs:15}));});
+    const yb=y0+5*lh+26;
+    s+=`<line x1="${cx}" y1="${y0+5*lh-2}" x2="${cx}" y2="${yb-2}" stroke="var(--W)" stroke-width="2" stroke-dasharray="3 4"/>`;
+    s+=`<path d="M ${cx} ${yb} l 17 17 l -17 17 l -17 -17 z" fill="var(--W)"/>`+tx(cx,yb+22,"Sat",{fs:12,b:1,fill:"#fff"});
+    s+=`<svg x="${x+6}" y="${yb+40}" width="${cw-12}" height="${(cw-12)*160/240}" viewBox="0 0 240 160">${F[BUILD_FIG[i]]("var(--W)")}</svg>`;
+    s+=tx(cx,yb+56+(cw-12)*160/240,w.build,{fs:14,b:1});
+    s+=`<rect x="${x+4}" y="${yb+62+(cw-12)*160/240}" width="116" height="7" rx="3" fill="var(--line)"/><rect id="wp${i}" x="${x+4}" y="${yb+62+(cw-12)*160/240}" width="0" height="7" rx="3" fill="var(--ok)"/></g>`;
+  });
+  const svg=document.getElementById("lanes"); svg.innerHTML=s;
+  svg.querySelectorAll(".lane-hit").forEach(g=>g.onclick=()=>{cur=+g.dataset.w;day=0;render();document.getElementById("ttcard").scrollIntoView({behavior:"smooth"});});
+}
+
+/* ---------- bell timeline ---------- */
+(function(){
+  const m=t=>{const [h,mm]=t.split(":").map(Number);return h*60+mm}, A=m("08:00"),B=m("15:15"), X=v=>30+(v-A)/(B-A)*940;
+  let s=`<line x1="30" y1="120" x2="970" y2="120" stroke="var(--muted)" stroke-width="1.5"/>`;
+  for(let h=8;h<=15;h++){const x=X(h*60);s+=`<line x1="${x}" y1="114" x2="${x}" y2="126" stroke="var(--muted)"/><text x="${x}" y="146" font-size="15" fill="var(--muted)" text-anchor="middle">${String(h).padStart(2,"0")}:00</text>`;}
+  BELLS.forEach((b,i)=>{const [a,e]=b[1].split("–").map(m),x1=X(a),x2=X(e),k=b[0],lunch=k==="—";
+    s+=`<rect x="${x1+2}" y="${lunch?55:20}" width="${x2-x1-4}" height="${lunch?40:90}" rx="10" fill="${lunch?"var(--chip)":`var(--${k}t)`}" stroke="${lunch?"var(--line)":`var(--${k})`}" stroke-width="2"/>`;
+    if(lunch)s+=`<text x="${(x1+x2)/2}" y="80" font-size="15" fill="var(--muted)" text-anchor="middle">lunch</text>`;
+    else{const n=KEYS.indexOf(k)+1;s+=`<text x="${(x1+x2)/2}" y="50" font-size="17" font-weight="700" fill="var(--${k})" text-anchor="middle">P${n}</text><text x="${(x1+x2)/2}" y="74" font-size="15" fill="var(--ink)" text-anchor="middle">${TR[k].split(" ")[0]}</text><text x="${(x1+x2)/2}" y="96" font-size="13" fill="var(--muted)" text-anchor="middle">${b[1]}</text>`;}});
+  document.getElementById("bells").innerHTML=s;
+})();
+
+/* ---------- maths steps, shopping ---------- */
+document.getElementById("mathsteps").innerHTML=[
+ ["frames","var(--M)","1 · Idea (10 min)","A picture and one sentence: what the formula means for the robot.",String.raw`\dot x = J(\theta)\,\dot\theta`],
+ ["python","var(--M)","2 · Compute (40 min)","Run it in a notebook with numpy, modern_robotics, scipy or filterpy on a real example: your arm or your IMU log.",String.raw`\texttt{mr.JacobianSpace(Slist, theta)}`],
+ ["jacobian","var(--M)","3 · Check (10 min)","Check the answer a second way: hand geometry, a finite difference, or the real robot.",String.raw`f(\theta+\delta)-f(\theta)\approx J(\theta)\,\delta`]
+].map(([f,c,h,p,t])=>`<div>${FIG(f,c)}<b>${h}</b>${p}<div class="tex" style="--t:var(--Mt);margin-top:10px">${tex(t)}</div></div>`).join("");
+document.getElementById("shop").innerHTML=`<tr><th>Item</th><th>Price</th><th>Needed</th></tr>`+
+  SHOP.map(s=>`<tr><td>${s[1]?`<a href="${s[1]}" target="_blank" rel="noopener">${esc(s[0])}</a>`:esc(s[0])}</td><td>${s[2]}</td><td><span class="wkchip">Week ${s[3]}</span></td></tr>`).join("");
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robotics Resource Library</title>
+<style>
+:root{
+  --bg:#f7f6f2; --panel:#ffffff; --ink:#1d2129; --muted:#5d6472; --line:#dcd9d0;
+  --accent:#2f6fde; --ok:#1f9d6b; --warn:#c7811c;
+  --m1:#e0623b; --m2:#d9a21b; --m3:#3fa66a; --m4:#2f8fd6; --m5:#7a5bd6; --m6:#d14a8b;
+  --chip:#eeece6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14161b; --panel:#1d2027; --ink:#e7e9ee; --muted:#9aa2b1; --line:#2f333d;
+    --accent:#6ea2ff; --chip:#272a33;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14161b; --panel:#1d2027; --ink:#e7e9ee; --muted:#9aa2b1; --line:#2f333d;
+  --accent:#6ea2ff; --chip:#272a33;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+.wrap{max-width:1120px;margin:0 auto;padding:24px 16px 80px}
+header h1{font-size:28px;margin:0 0 4px} header p{color:var(--muted);margin:0 0 12px;max-width:760px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+button.theme{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 10px;cursor:pointer}
+.progress{height:8px;background:var(--chip);border-radius:6px;overflow:hidden;margin:6px 0 2px}
+.progress>div{height:100%;background:var(--ok);width:0;transition:width .3s}
+.small{font-size:13px;color:var(--muted)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin:18px 0}
+svg text{font-family:inherit}
+.map-node{cursor:pointer} .map-node:hover circle.ring{stroke-width:6}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.tier{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg)}
+.tier b{display:block;font-size:18px}
+details.month{background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--mc);border-radius:14px;margin:18px 0;overflow:hidden}
+details.month>summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;gap:14px;align-items:center}
+details.month>summary::-webkit-details-marker{display:none}
+.badge{flex:none;width:44px;height:44px;border-radius:50%;background:var(--mc);color:#fff;display:grid;place-items:center;font-weight:700;font-size:18px}
+.sum-t{flex:1} .sum-t h2{margin:0;font-size:20px} .sum-t div{color:var(--muted);font-size:14px}
+.mprog{font-size:13px;color:var(--muted);white-space:nowrap}
+.mbody{padding:0 18px 18px}
+.why{background:var(--chip);border-radius:10px;padding:10px 14px;margin:0 0 12px;font-size:14px}
+.sec{border-top:1px dashed var(--line);padding-top:14px;margin-top:14px}
+.sec h3{margin:0 0 8px;font-size:17px;display:flex;gap:8px;align-items:center}
+.sec h3 .n{background:var(--mc);color:#fff;border-radius:6px;font-size:12px;padding:1px 7px}
+.cols{display:grid;gap:14px;grid-template-columns:1.25fr 1fr}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+ul.res{list-style:none;padding:0;margin:0}
+ul.res li{padding:6px 0;border-bottom:1px solid var(--line);font-size:14px}
+ul.res li:last-child{border-bottom:0}
+ul.res .note{color:var(--muted);display:block;font-size:13px}
+.price{font-size:12px;background:var(--chip);border-radius:5px;padding:0 6px;margin-left:4px;white-space:nowrap}
+h4{margin:6px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+ul.focus{margin:0;padding-left:18px;font-size:14px}
+.task{margin-top:10px;border:1px solid var(--mc);border-radius:10px;padding:10px 12px;font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.task input{margin-top:4px;accent-color:var(--ok);width:18px;height:18px;flex:none}
+.task.done{opacity:.6}
+.task .lbl{font-weight:600;color:var(--mc)}
+.mile{margin-top:16px;background:var(--chip);border-radius:10px;padding:12px 14px}
+.mile label{display:flex;gap:8px;align-items:flex-start;font-size:14px;padding:3px 0;cursor:pointer}
+.mile input{accent-color:var(--ok);margin-top:4px}
+.callout{border-left:4px solid var(--warn);background:var(--chip);padding:8px 12px;border-radius:6px;font-size:14px;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600}
+.dir{border-top:4px solid var(--m6)}
+.mapwrap{overflow-x:auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <header>
+      <h1>Robotics: a 6-month build-first roadmap</h1>
+      <p>From zero electronics to a trained robot policy. Two or three hours a day. Every section ends with something you build. Click a node in the map to jump to that month; tick tasks and milestones as you finish them (saved in this browser).</p>
+    </header>
+    <button class="theme" id="themeBtn" aria-label="Toggle theme">◐ Theme</button>
+  </div>
+  <div class="progress"><div id="totalBar"></div></div>
+  <div class="small" id="totalTxt"></div>
+
+  <div class="card mapwrap">
+    <svg id="map" viewBox="0 0 1080 320" width="100%" style="min-width:720px" role="img" aria-label="Roadmap: six months as stations on a path"></svg>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">What the job actually asks for</h3>
+    <div class="grid" id="jobs"></div>
+  </div>
+
+  <div id="months"></div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Pick a direction (month 6)</h3>
+    <div class="grid" id="dirs"></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">How this maps onto your workspace curriculum</h3>
+    <p class="small">The article is hardware-first; <code>CLAUDE.md</code> is theory-first (Park / Modern Robotics) with a synced ROS 2 stream. They meet in the middle: the article's month 4–5 is your Phases 1–8.</p>
+    <table>
+      <thead><tr><th>Article month</th><th>Workspace phase (Stream A / Stream B)</th><th>Overlap</th></tr></thead>
+      <tbody id="xwalk"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">After six months, honestly</h3>
+    <ul class="focus">
+      <li>Not senior — that is 5+ years of deploying real-time systems on physical robots.</li>
+      <li>You will be someone who can build, debug and ship working robots across the stack, with a portfolio to prove it.</li>
+      <li>Entry points with no degree: robotics technician (BLS median ≈ $73.9k), teleoperation / data collection (≈ $22–35/h).</li>
+      <li>Robot hardware is ~25% of a robot-cell project cost; the other 75% is engineering, safety and integration.</li>
+      <li><b>Build the projects. Write down what broke. Start before you feel ready.</b></li>
+    </ul>
+    <p class="small">Prices and figures are as quoted by the source article (checked Sept 2026); verify before buying.</p>
+  </div>
+</div>
+
+<script>
+const R=(t,u,n,p)=>({t,u,n,p});
+const MONTHS=[
+{ id:"m1", c:"var(--m1)", title:"Electronics, the bench & your tools",
+  goal:"Read a schematic, build a circuit that works, and find the fault when it does not.",
+  why:"Sometimes the bug is a loose wire, a sagging battery or a motor drawing more current than the regulator can supply. You cannot diagnose that without the electrical layer.",
+  secs:[
+   {h:"Electronics fundamentals", res:[
+     R("Falstad Circuit Simulator","https://www.falstad.com/circuit/","Animated current flow and live voltage colour.","free"),
+     R("Tinkercad Circuits","https://www.tinkercad.com/circuits","Virtual breadboard + Arduino + multimeter.","free"),
+     R("All About Circuits — Lessons in Electric Circuits","https://www.allaboutcircuits.com/textbook/","Open six-volume EE reference.","free"),
+     R("Afrotechmods Tutorials","https://afrotechmods.com/tutorials/","Short, fast videos by level.","free"),
+     R("Make: Electronics, 3rd ed. (Platt)","https://www.makershed.com/products/make-electronics-3rd-edition-print","Best paper book for a first-timer.","$29.99")],
+    focus:["Ohm's law and voltage dividers until automatic","Current draw: why a stalling motor browns out the MCU","Schematic symbols: R, C, diode, transistor, GND, Vcc","Pull-up / pull-down resistors","Decoupling capacitors","LiPo cell counts, C ratings, charging safety"],
+    task:"Build a voltage divider in Falstad, compute V_out by hand, confirm in simulation. Then a transistor switch that lights an LED from a 3.3 V logic input."},
+   {h:"The bench, the tools & what it costs", tiers:true, res:[
+     R("Elegoo UNO R3 Super Starter Kit","https://www.elegoo.com/products/elegoo-uno-r3-super-starter-kit","Best value; most courses target it.","$42.99"),
+     R("Elegoo UNO Basic Starter Kit","https://www.elegoo.com/products/elegoo-uno-basic-starter-kit","Cheapest real entry point.","$19.99"),
+     R("SparkFun Inventor's Kit v4.1.2","https://www.sparkfun.com/sparkfun-inventor-s-kit-v4-1-2.html","Best curriculum; free guide usable with any kit.","$99.95"),
+     R("Adafruit multimeter 9205B+","https://www.adafruit.com/product/2034","Everything you need for years.","$17.50"),
+     R("Pinecil V2 soldering iron","https://pine64.com/product/pinecil-smart-mini-portable-soldering-iron/","Temperature-controlled, USB-C.","$26–36")],
+    focus:["First order: Amazon or Elegoo direct (days, not weeks)","Later: AliExpress (3–10× cheaper, 2–6 weeks)","Adafruit / SparkFun: dearer, every product has a tutorial","Pololu for motors & drivers; DigiKey / Mouser for exact parts"],
+    task:"Measure a battery, five resistors (check against colour bands), and find a deliberately broken wire with continuity mode."},
+   {h:"Soldering", res:[
+     R("Adafruit Guide to Excellent Soldering","https://learn.adafruit.com/adafruit-guide-excellent-soldering","The industry reference.","free"),
+     R("SparkFun: How to Use a Multimeter","https://learn.sparkfun.com/tutorials/how-to-use-a-multimeter","Including the blown-fuse case.","free")],
+    focus:["Tin the tip, keep it clean","Heat the joint, not the solder","Recognise a cold joint","Through-hole first","Use flux"],
+    task:"Solder header pins on a breakout, continuity-test every pin, three times. Then desolder one and resolder it."},
+   {h:"Python, terminal & Git", res:[
+     R("CS50P (Harvard)","https://cs50.harvard.edu/python/","Rigorous, with problem sets.","free"),
+     R("Python for Everybody","https://www.coursera.org/specializations/python","Gentlest start.","free audit"),
+     R("The Missing Semester (MIT)","https://missing.csail.mit.edu/","Shell and tooling fluency.","free"),
+     R("Learn Git Branching","https://learngitbranching.js.org/","Visual branches and merges.","free")],
+    focus:["Python: functions, classes, file I/O, JSON, venv, pip","Terminal: cd, ls, grep, env vars, ssh","Git: init/add/commit/push, branches, READMEs"],
+    task:"Every project from now lives in a GitHub repo: photo, wiring description, and a paragraph on what broke and how you fixed it."}],
+  mile:["Read a schematic and build it on a breadboard","Check a resistor value before plugging it in","Find a short, a break or a dead part with a multimeter","Solder a clean through-hole joint and test it","Write a Python script, run it, push it to GitHub","Explain why a stalling motor can reset the MCU"]},
+
+{ id:"m2", c:"var(--m2)", title:"Microcontrollers, motors, sensors & first robot",
+  goal:"Build a robot that moves, senses its environment and corrects itself.",
+  why:"A line follower is a closed loop with sensor input, actuator output and a tuning problem — a humanoid in miniature.",
+  secs:[
+   {h:"Arduino", res:[
+     R("Paul McWhorter — Arduino Lessons","https://toptechboy.com/arduino-lessons/","100+ slow lessons with homework.","free"),
+     R("Arduino Built-in Examples","https://docs.arduino.cc/built-in-examples/","Fastest route to something moving.","free"),
+     R("Arduino Docs — Learn","https://docs.arduino.cc/learn/","IO, PWM, I²C, SPI, UART reference.","free"),
+     R("Arduino Project Hub","https://projecthub.arduino.cc/","6,000+ projects.","free")],
+    focus:["digital/analog read & write; what PWM is","Interrupts vs polling","I²C & SPI from a datasheet","Serial debugging","millis() not delay()"],
+    task:"Reaction-timer game: LED after random delay, button stops the clock, ms printed to serial (interrupts, debouncing, non-blocking timing)."},
+   {h:"ESP32", res:[
+     R("Random Nerd Tutorials — ESP32","https://randomnerdtutorials.com/getting-started-with-esp32/","Fix for nearly every beginner failure.","free"),
+     R("ESP-IDF Programming Guide","https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html","Source of truth past Arduino.","free"),
+     R("Arduino ESP32 Core docs","https://docs.espressif.com/projects/arduino-esp32/en/latest/","Bridge Arduino ↔ IDF.","free"),
+     R("DroneBot Workshop ESP32 hub","https://dronebotworkshop.com/esp32-2/","ESP-NOW, OTA, low power.","free"),
+     R("ESP32-S3-DevKitC-1 (main board)","https://www.adafruit.com/product/5312","","$15.95"),
+     R("Classic ESP32 Dev Board","https://www.adafruit.com/product/3269","Runs older tutorial code.","$15.00"),
+     R("Seeed XIAO ESP32-C3","https://www.seeedstudio.com/Seeed-XIAO-ESP32C3-p-5431.html","Tiny.","$4.99")],
+    focus:["Arduino framework → speed to a robot","ESP-IDF → tasks, cores, power, timing","MicroPython → experiments, not balancing loops (GC pauses)"],
+    task:"ESP32 web page with live sensor readings and buttons driving a servo, opened from your phone."},
+   {h:"Motors, drivers & actuation", res:[
+     R("DroneBot: DC motors with L298N","https://dronebotworkshop.com/dc-motors-l298n-h-bridge/","H-bridge theory and PWM.","free"),
+     R("SparkFun TB6612FNG Hookup Guide","https://learn.sparkfun.com/tutorials/tb6612fng-hookup-guide/all","The driver to actually use.","free"),
+     R("DroneBot: Stepper Motors","https://dronebotworkshop.com/stepper-motors-with-arduino/","Microstepping, NEMA sizes.","free"),
+     R("SimpleFOC docs","https://docs.simplefoc.com/","Clearest free FOC explanation.","free"),
+     R("Adafruit DRV8833 driver","https://www.adafruit.com/product/3297","","$5.95"),
+     R("SparkFun TB6612FNG breakout","https://www.sparkfun.com/sparkfun-motor-driver-dual-tb6612fng-1a.html","","$14.77"),
+     R("Pololu gearmotor + encoder","https://www.pololu.com/product/3675","","$19.95"),
+     R("Pololu A4988 stepper driver","https://www.pololu.com/product/1182","","$8.95"),
+     R("Feetech STS3215 smart servo","https://www.robotshop.com/products/feetech-12v-30kgcm-magnetic-encoding-servo-sts3215","Used in the SO-101 arm.","$31.71")],
+    focus:["Brushed DC gearmotor (H-bridge, add encoder)","Hobby servo (internal loop, no feedback out)","Smart bus servo (position/velocity/current feedback)","Stepper (open-loop positioning)"],
+    note:"L298N is in every tutorial — don't use it. ~2 V drop, runs hot. Use TB6612FNG or DRV8833.",
+    task:"Drive a DC motor both ways at five PWM speeds; add an encoder and turn the wheel exactly one revolution regardless of battery voltage."},
+   {h:"Sensors", res:[
+     R("Adafruit BNO085 IMU guide","https://learn.adafruit.com/adafruit-9-dof-orientation-imu-fusion-breakout-bno085/overview","On-chip fusion → quaternion.","free"),
+     R("Kalman & Bayesian Filters in Python (Labbe)","https://rlabbe.github.io/Kalman-and-Bayesian-Filters-in-Python/","KF, EKF, UKF, PF notebooks.","free"),
+     R("MathWorks: Sensor Fusion & Tracking","https://www.mathworks.com/videos/series/understanding-sensor-fusion-and-tracking.html","Six-part overview.","free")],
+    focus:["HC-SR04 ultrasonic $3.95 · VL53L0X ToF $14.95","MPU-6050 $12.95 (do fusion yourself) · BNO085 $29.50","Pololu encoder pair $8.95 · RPLIDAR C1 $69","Complementary filter first: θ = a(θ + ω·dt) + (1−a)·θ_acc, a ≈ 0.98"],
+    task:"Print IMU pitch, hold still, watch it drift; add a complementary filter and watch the drift go."},
+   {h:"Your first two robots",
+    focus:["Line follower: ≈ $105 quality (ESP32-S3, Romi chassis, TB6612, QTR-8RC) / ≈ $38 budget","Self-balancer: ≈ $134 quality (2× encoder gearmotors, MPU-6050, LiPo) / ≈ $62 budget"],
+    task:"Line follower with P, then add D and film both. Then the balancer — it won't work until filter and loop timing are both right."}],
+  mile:["Distinguish PWM duty from actual RPM","Close a position loop around an encoder","Read an I²C sensor from its datasheet alone","Fuse accel + gyro into a stable angle","Explain P, I, D from what your robot did","Two robots on GitHub with a 'what broke' write-up"]},
+
+{ id:"m3", c:"var(--m3)", title:"Mechanical design, CAD & manufacturing",
+  goal:"Design a part in CAD, manufacture it, and have it fit.",
+  why:"This separates kit assemblers from robot builders: idea → physical bracket in an afternoon.",
+  secs:[
+   {h:"CAD (pick one, go deep)", res:[
+     R("Onshape Learning Center — Fundamentals","https://learn.onshape.com/learning-paths/onshape-fundamentals-cad","Browser CAD; free docs are public.","free"),
+     R("Learn Fusion in 30 Days","https://productdesignonline.com/learn-autodesk-fusion-360-in-30-days-official-course/","30 objects, 30 days.","free"),
+     R("MangoJelly FreeCAD tutorials","https://www.youtube.com/@MangoJellySolutions","FreeCAD 1.1 is usable now.","free"),
+     R("Design for 3D printing (Protolabs)","https://www.hubs.com/knowledge-base/design-for-3d-printing/","Walls, tolerances, snap-fits, STL vs STEP.","free")],
+    focus:["Fully constrained sketches","Parametric, variable-driven parts","Assemblies with revolute/slider/fixed mates","Design from datasheet dimensions","STEP for sharing, STL for printing"],
+    task:"Model a bracket for your exact servo from its datasheet drawing, print it, see if it fits (it won't the first time)."},
+   {h:"3D printing", res:[
+     R("Creality Ender-3 V3 SE","https://store.creality.com/products/ender-3-v3-se-3d-printer","","$199"),
+     R("Bambu Lab A1 mini","https://www.bestbuy.com/product/bambu-lab-a1-mini-3d-printer-silver/CZTZV9ZGGV","","$219.99"),
+     R("Bambu Lab A1 (256 mm bed)","https://www.bestbuy.com/product/bambu-lab-a1-3d-printer-silver/CZW2ZH33H4","","$299.99"),
+     R("Creality K1C (enclosed)","https://store.creality.com/products/k1c-3d-printer","","$369"),
+     R("Bambu Lab P1S (ABS/ASA)","https://us.store.bambulab.com/products/p1s","","$799"),
+     R("OrcaSlicer Calibration wiki","https://github.com/OrcaSlicer/OrcaSlicer/wiki/Calibration","Calibrations in running order.","free"),
+     R("Teaching Tech calibration","https://teachingtechyt.github.io/calibration.html","Interactive walkthrough.","free"),
+     R("CNC Kitchen","https://www.youtube.com/@CNCKitchen","Strength tests as data.","free"),
+     R("Clearance & tolerance gauge (STL)","https://www.printables.com/model/57067-clearance-and-tolerance-3d-printer-gauge","Know your real clearance.","free"),
+     R("Fab Labs directory","https://fablabs.io/labs","No printer? ~2,875 labs.","free"),
+     R("Library makerspaces","https://action.everylibrary.org/how_to_find_a_makerspace_near_you","",""),
+     R("Craftcloud","https://craftcloud3d.com/","Quotes across 95 countries.",""),
+     R("JLC3DP","https://jlc3dp.com/","From $1/part.","")],
+    focus:["PLA/PLA+ prototypes (creeps, softens ~55–60 °C)","PETG default real part","ABS/ASA hot or outdoor (needs enclosure)","Nylon gears · CF-filled stiff links (hardened nozzle) · TPU feet/fingers"],
+    task:"Print the tolerance gauge, record your numbers, then design a glue-free snap-fit ESP32 enclosure and iterate until it clicks."},
+   {h:"Actuators, transmissions & why robots are hard", res:[
+     R("OpenCycloid actuator (Instructables)","https://www.instructables.com/OpenCycloid-3D-printed-Open-Source-Robotic-Actuato/","Reference geometry.","free")],
+    focus:["Gear ratio: speed ↔ torque","Backlash — software cannot fully fix it","Bearing selection and preload","Belt vs gear vs direct drive","Plastic servo gears fail first"],
+    task:"Design and print a planetary or cycloidal reducer, measure backlash by rocking the output, redesign to reduce it."},
+   {h:"Build a real robot arm: SO-101", res:[
+     R("SO-ARM100/101 repo (BOM)","https://github.com/TheRobotStudio/SO-ARM100","Leader+follower ≈ $230; follower ≈ $122.","free"),
+     R("Seeed SO-ARM101 Pro servo kit","https://www.seeedstudio.com/SO-ARM101-Low-Cost-AI-Arm-Kit-Pro-p-6427.html","","$277.99"),
+     R("Seeed printed parts set","https://www.seeedstudio.com/SO-ARM101-3D-printed-Enclosure-p-6428.html","","$30.99"),
+     R("Robonine complete kit","https://robonine.com/shop/so-arm101-black-robotic-arm-kit/","","$349"),
+     R("WowRobo via OpenELAB","https://openelab.com/products/wowrobo-robotics-so-arm101-diykit","","$326–490"),
+     R("EEZYbotARM MK2 (cheaper)","https://www.thingiverse.com/thing:1454048","Linkage kinematics with hobby servos.","$50–80"),
+     R("Hiwonder xArm 1S","https://www.hiwonder.com/products/xarm-1s","Cheapest bus-servo arm.","$199.99")],
+    focus:["$0 tier: run the LeRobot stack in MuJoCo first","Leader/follower teleop = demonstration recording for month 6"],
+    task:"Build, calibrate and teleoperate the SO-101; design TPU gripper fingers and test them on three object shapes."}],
+  mile:["Model a part from a datasheet, fully constrained","State your printer's measured clearances","Design for FDM: orientation, overhangs, layer adhesion","Choose and justify PLA / PETG / ABS / TPU","Demonstrate backlash on something you built","Show an arm you built, calibrated and modified"]},
+
+{ id:"m4", c:"var(--m4)", title:"ROS 2, simulation & building like a company",
+  goal:"Build a robot in ROS 2, simulate it, make it map a room and navigate autonomously.",
+  why:"ROS 2 is the most requested skill in robotics listings — and this month needs no hardware and no GPU.",
+  secs:[
+   {h:"Which ROS 2 — and the ROS 1 trap",
+    focus:["Start on Jazzy (Ubuntu 24.04, EOL May 2029) — your workspace already does","Lyrical (May 2026) is the newest LTS; move once tutorials catch up","Kilted EOL Dec 2026; Humble legacy (EOL May 2027)"],
+    note:"ROS 1 is dead (Noetic EOL May 2025). See catkin_make, roscore, rosrun, rospy? Close the tab."},
+   {h:"ROS 2 core concepts", res:[
+     R("Official ROS 2 Jazzy Tutorials","https://docs.ros.org/en/jazzy/Tutorials.html","Canonical reference.","free"),
+     R("The Construct","https://www.theconstruct.ai/","ROS in the browser.","free tier"),
+     R("Edouard Renard — ROS 2 for Beginners","https://www.udemy.com/course/ros2-for-beginners/","Python + C++, 13 h.","$10–20"),
+     R("Articulated Robotics","https://articulatedrobotics.xyz/tutorials/","Design → URDF → sim → ros2_control → SLAM.","free"),
+     R("MOGI-ROS university course","https://github.com/orgs/MOGI-ROS/repositories","Jazzy + Gazebo Harmonic semester.","free"),
+     R("Automatic Addison","https://automaticaddison.com/tutorials/","Recipes by distro.","free")],
+    focus:["Topic vs service vs action — which one?","Custom .msg / .srv","Parameters & YAML","Python launch files, args, remaps","colcon & package layout","ros2 bag record / replay"],
+    note:"QoS mismatches explain most 'publishes but nothing receives' bugs. Read the official Concepts pages.",
+    task:"Multi-node system, no robot: sensor publisher, processor, service-based config node, parameterised aggregator, custom msg/srv, launch file with args; bag and replay."},
+   {h:"URDF, TF & describing a robot", res:[
+     R("Articulated Robotics — Coordinate Transforms","https://articulatedrobotics.xyz/category/coordinate-transforms-for-robotics","Frames first.","free"),
+     R("Edouard Renard — TF, URDF, RViz, Gazebo","https://www.udemy.com/course/ros2-tf-urdf-rviz-gazebo/","Best URDF resource.","$10–20"),
+     R("URDF with robot_state_publisher","https://docs.ros.org/en/jazzy/Tutorials/Intermediate/URDF/Using-URDF-with-Robot-State-Publisher-cpp.html","Official walkthrough.","free")],
+    focus:["joint_state_publisher invents joints; robot_state_publisher computes TF","Always include <inertial>","Static TF to the lidar frame","xacro macros from day one"],
+    task:"Your own xacro robot: diff-drive base, sensor mast, 2-DOF pan-tilt; correct inertias; drive with joint_state_publisher_gui; view TF tree in RViz."},
+   {h:"Simulation", res:[
+     R("Gazebo docs","https://gazebosim.org/docs/latest/getstarted/","Jazzy ↔ Harmonic.","free"),
+     R("MuJoCo","https://mujoco.readthedocs.io/en/stable/overview.html","Fast contact dynamics, CPU-first.","free"),
+     R("NVIDIA Isaac Sim requirements","https://docs.isaacsim.omniverse.nvidia.com/6.0.0/installation/requirements.html","Needs RTX 4080 16 GB.","free")],
+    focus:["Gazebo Classic EOL Jan 2025; `ign` → `gz`","Pairs: Humble–Fortress, Jazzy–Harmonic, Kilted–Ionic, Lyrical–Jetty","Gazebo first → MuJoCo for RL → Isaac only with RTX","Skip PyBullet; watch Genesis"],
+    task:"Put your xacro robot in Gazebo with lidar + camera plugins in a custom SDF world; confirm topics and RViz rendering."},
+   {h:"ros2_control", res:[
+     R("ros2_control docs","https://control.ros.org/rolling/index.html","Hardware interfaces, controller manager.","free"),
+     R("Articulated Robotics — ros2_control on real hardware","https://articulatedrobotics.xyz/tutorials/mobile-robot/applications/ros2_control-real/","Sim → real.","free")],
+    task:"Add <ros2_control> tags, diff_drive_controller + joint_state_broadcaster via YAML, teleop in Gazebo; then an action server that drives a commanded distance with feedback and cancel."},
+   {h:"SLAM & navigation", res:[
+     R("Nav2 Getting Started","https://docs.nav2.org/rolling/getting_started/index.html","Sim in five minutes.","free"),
+     R("Nav2 Tutorials","https://docs.nav2.org/rolling/tutorials/","Keepout, docking, custom planners.","free"),
+     R("SLAM Toolbox","https://github.com/SteveMacenski/slam_toolbox","Supported ROS 2 SLAM.","free"),
+     R("RTAB-Map ROS 2","https://github.com/introlab/rtabmap_ros","RGB-D / stereo SLAM.","free"),
+     R("Hiwonder MentorPi M1","https://www.hiwonder.com/products/mentorpi-m1","Ready platform.","$299.99"),
+     R("Waveshare UGV Rover ROS 2","https://www.waveshare.com/ugv-rover-ros2-kit.htm","Pi host + ESP32 real-time.","$534.99")],
+    focus:["Mapping vs localisation mode","Smeared map = odometry problem","Costmaps: inflation, layers, local vs global","Behaviour trees"],
+    task:"SLAM Toolbox in your Gazebo world, save the map, switch to localisation, send Nav2 goals from RViz, tune costmaps, screen-record."}],
+  mile:["ROS 2 nodes in Python and C++ (topics, services, actions)","Your robot in xacro with frames, inertias, collisions","Simulated in Gazebo with lidar and camera","Driven through ros2_control","Map with SLAM Toolbox; navigate with Nav2","Diagnose a broken TF tree"]},
+
+{ id:"m5", c:"var(--m5)", title:"The maths that makes robots work",
+  goal:"Understand and implement the control and perception underneath what you built.",
+  why:"The difference between configuring Nav2 and fixing Nav2 is exactly this material. (This is where your Park / Modern Robotics study lives.)",
+  secs:[
+   {h:"Control theory, starting with PID", res:[
+     R("Understanding PID Control (Brian Douglas)","https://www.mathworks.com/videos/series/understanding-pid-control.html","Windup, derivative filtering, tuning.","free"),
+     R("Brian Douglas — Control lectures","https://www.youtube.com/@BrianBDouglas/playlists","Intuition first.","free"),
+     R("Fundamentals of Control Theory (book)","https://engineeringmedia.com/books","Written companion.","free"),
+     R("Control Bootcamp (Steve Brunton)","https://www.youtube.com/playlist?list=PLMrJAkhIeNNR20Mz-VpzgfQs5zrYi085m","State space, LQR, Kalman.","free"),
+     R("Feedback Systems (Åström & Murray)","https://fbswiki.org/wiki/index.php/Feedback_Systems:_An_Introduction_for_Scientists_and_Engineers","The rigorous text.","free PDF")],
+    focus:["What P, I, D each do — and how each fails","Integrator windup","Derivative noise and filtering","Steady-state error: integrator vs gravity compensation","Feedforward"],
+    task:"On the balancer: P, PD, PID + feedforward. Log step responses to CSV, plot all three, write which you would ship."},
+   {h:"State space, LQR & MPC", res:[
+     R("Understanding MPC (MATLAB)","https://www.mathworks.com/videos/series/understanding-model-predictive-control.html","","free"),
+     R("Underactuated Robotics (Tedrake)","https://underactuated.csail.mit.edu/index.html","Cart-poles to humanoids.","free")],
+    focus:["State/input/output form","LQR = principled gain choice","MPC buys constraints, costs compute","Underactuation"],
+    task:"LQR for a simulated cart-pole in Python vs a hand-tuned PID under a disturbance."},
+   {h:"Kinematics & dynamics", res:[
+     R("Modern Robotics (Lynch & Park)","http://hades.mech.northwestern.edu/index.php/Modern_Robotics","Book, code, videos — PoE / screw theory.","free"),
+     R("Modern Robotics Specialization","https://www.coursera.org/specializations/modernrobotics","Six courses.","free audit"),
+     R("Robotics Toolbox for Python (Corke)","https://github.com/petercorke/robotics-toolbox-python","FK, Jacobians, IK, 50+ robots.","free"),
+     R("QUT Robot Academy","https://robotacademy.net.au","200+ short lessons.","free")],
+    focus:["Homogeneous transforms and composition","FK (easy) and IK (not)","Jacobian & singularities","Workspace and joint limits","Joint-space vs Cartesian trajectories"],
+    task:"Hand-compute FK of the SO-101 from its link lengths, verify with Robotics Toolbox; write a numerical IK solver and watch it near a singularity."},
+   {h:"Perception & computer vision", res:[
+     R("OpenCV Bootcamp","https://courses.opencv.org/courses/course-v1:OpenCV+Bootcamp+CV0/about","Official 2–3 h course.","free"),
+     R("OpenCV camera calibration","https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html","Chessboard → intrinsics.","free"),
+     R("Cyrill Stachniss lectures","https://www.ipb.uni-bonn.de/online-training-robotics/","Projective geometry, SLAM.","free"),
+     R("Open3D point clouds","https://www.open3d.org/docs/release/tutorial/geometry/pointcloud.html","Downsample, ICP, plane fit.","free")],
+    focus:["Intrinsics and distortion","Pinhole projection: image vs world coords","Stereo vs structured light vs ToF","Point clouds: plane fit, clustering","Lighting breaks pipelines"],
+    task:"Calibrate a real camera, detect a coloured object, estimate its 3D position; change the lighting, watch it fail, fix it."},
+   {h:"Manipulation & MoveIt 2", res:[
+     R("MoveIt 2 Getting Started","https://moveit.picknik.ai/main/doc/tutorials/getting_started/getting_started.html","Jazzy recommended.","free"),
+     R("Pick & Place with MTC","https://moveit.picknik.ai/main/doc/tutorials/pick_and_place_with_moveit_task_constructor/pick_and_place_with_moveit_task_constructor.html","Task stages, grasps, IK.","free"),
+     R("Robotic Manipulation (Tedrake)","https://manipulation.csail.mit.edu/","Full manipulation stack.","free"),
+     R("Contact-GraspNet (NVIDIA)","https://github.com/NVlabs/contact_graspnet","6-DOF grasp baseline.","free")],
+    task:"MoveIt 2 pick and place on a simulated arm with collision objects; then block the only path and study the planner's failure."}],
+  mile:["Tune a PID and explain each term from data","State-space model + LQR on a simulated plant","FK by hand; IK numerically","Point at a singularity on a real robot","Calibrate a camera; pixel → 3D position","Collision-free pick and place in MoveIt 2"]},
+
+{ id:"m6", c:"var(--m6)", title:"Robot learning, specialisation & getting hired",
+  goal:"Pick one direction, build a portfolio piece in it, and start applying.",
+  why:"Teleoperate → record → train → deploy. Then turn everything into something that gets you hired.",
+  secs:[
+   {h:"LeRobot", res:[
+     R("LeRobot documentation","https://huggingface.co/docs/lerobot/index","Full pipeline.","free"),
+     R("LeRobot repository","https://github.com/huggingface/lerobot","How the policies are built.","free"),
+     R("Hugging Face Robotics Course","https://huggingface.co/learn/robotics-course/unit0/1","No hardware needed.","free"),
+     R("SO-101 setup guide","https://huggingface.co/docs/lerobot/so101","Ports, motors, calibration, recording.","free")],
+    focus:["Record-train-deploy end to end","Dataset quality = policy quality","ACT: action chunking","Diffusion Policy"],
+    task:"50 demos of pick-cube-to-bin, train ACT, deploy, measure success rate; 50 more on failure cases, retrain, measure again."},
+   {h:"Vision-language-action models", res:[
+     R("π₀ / π₀-FAST / π₀.₅ (openpi)","https://github.com/Physical-Intelligence/openpi","Open weights; transfer not guaranteed.","free"),
+     R("OpenVLA","https://openvla.github.io/","7B, best-documented.","free"),
+     R("NVIDIA GR00T","https://github.com/Nvidia/Isaac-GR00T","Code Apache 2.0, weights NVIDIA licence; 16 GB+.","free"),
+     R("SmolVLA","https://huggingface.co/lerobot/smolvla_base","Right size to fine-tune on SO-101.","free")],
+    focus:["RT-2: historically important, no public weights"]},
+   {h:"Reinforcement learning for robotics", res:[
+     R("MuJoCo Playground","https://github.com/google-deepmind/mujoco_playground","Colab tutorials; start here.","free"),
+     R("NVIDIA Isaac Lab","https://github.com/isaac-sim/IsaacLab","Legged/humanoid sim-to-real; RTX.","free"),
+     R("CS 285 Deep RL (Levine)","https://rail.eecs.berkeley.edu/deeprlcourse","Robotics-native RL course.","free")],
+    task:"Train a quadruped locomotion policy in MuJoCo Playground on Colab; change the reward and watch the gait change."},
+   {h:"Portfolio",
+    focus:["High signal: logged metrics, iterative commit history, real-robot reliability data, public LeRobot datasets, upstream contributions, integration videos","Red flags: ROS 1 only, projects that fail three follow-ups, DL with no kinematics, certificates"],
+    task:"Rewrite your three best READMEs: video at top, architecture diagram, measured numbers, and 'What broke and how I fixed it'."},
+   {h:"Interviews", res:[
+     R("Glassdoor robotics interview questions","https://www.glassdoor.com/Interview/robotics-engineer-interview-questions-SRCH_KO0,17.htm","1,721 real questions.","free")],
+    focus:["IK, PID, Kalman, SLAM, RRT, C++ vs Python","Sim debugging exercise with a broken controller","A long conversation about a past failure"],
+    task:"Have someone grill you on your own repo for 20 minutes — why that gain, that sensor, what if the battery sags. Three levels deep."}],
+  mile:["Record a dataset and run a trained policy on your hardware","Explain behaviour cloning vs ACT vs diffusion policy","Name which VLAs have open weights","State your direction and why","Three projects with video, metrics and failure analysis","Answer three levels of follow-ups on your own code"]}
+];
+
+const JOBS=[
+ ["C++ and Python","Both, not one or the other."],
+ ["Real hardware","Simulation-only does not make you senior."],
+ ["T-shaped","Depth in one specialism, literacy across the rest."],
+ ["Debugging","Named as a skill in its own right."]];
+const DIRS=[
+ ["Robot learning & embodied AI","Highest ceiling, most competitive.","LeRobot, VLA fine-tuning, imitation learning, RL, sim, PyTorch"],
+ ["Autonomy & mobile robotics","Most jobs available.","ROS 2, Nav2, SLAM, perception, sensor fusion, C++"],
+ ["Embedded, mechatronics & integration","Employable now, incl. contracting.","Firmware, motor control, RTOS, PLCs, functional safety"]];
+const XWALK=[
+ ["1 Electronics & tools","— (not in workspace yet)","Python/Git ↔ FoR Ch4 (PDF 100)"],
+ ["2 MCUs, motors, sensors","Phase 8 (Kalman/EKF, FoR 7–9)","Complementary → Kalman filter; FoR Ch7 sensors (PDF 193)"],
+ ["3 CAD & the arm","Phase 3 URDF of a 2–3 link arm","SO-101 becomes your real FK/IK target"],
+ ["4 ROS 2 & simulation","Stream B, Phases 1–6 & 8","CLI → rclpy → URDF/tf2 → Gazebo + ros2_control → Nav2"],
+ ["5 The maths","Stream A, Phases 1–7","Spatial math, statics, FK/IK, Jacobian, dynamics, MoveIt 2"],
+ ["6 Learning & hiring","Phase 9 (FoR 15 Learning, capstone)","LeRobot on SO-101; FoR Ch18 port as portfolio piece"]];
+
+/* ---------- storage ---------- */
+const KEY="robo-roadmap-v1"; let state={};
+try{state=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){state={}}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
+
+/* ---------- theme ---------- */
+document.getElementById("themeBtn").onclick=()=>{
+  const r=document.documentElement, dark=r.dataset.theme? r.dataset.theme==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  r.dataset.theme=dark?"light":"dark";
+};
+
+/* ---------- render months ---------- */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const host=document.getElementById("months");
+MONTHS.forEach((m,mi)=>{
+  let h=`<details class="month" id="${m.id}" style="--mc:${m.c}"${mi===0?" open":""}>
+   <summary><div class="badge">${mi+1}</div><div class="sum-t"><h2>Month ${mi+1}: ${esc(m.title)}</h2><div>${esc(m.goal)}</div></div><div class="mprog" data-m="${mi}"></div></summary>
+   <div class="mbody"><div class="why">${esc(m.why)}</div>`;
+  m.secs.forEach((s,si)=>{
+    h+=`<div class="sec"><h3><span class="n">${mi+1}.${si+1}</span>${esc(s.h)}</h3>`;
+    if(s.tiers) h+=`<div class="grid" style="margin-bottom:12px">
+      <div class="tier"><b>$0</b>Falstad, Tinkercad, All About Circuits. Do this first.</div>
+      <div class="tier"><b>$45–60</b>Starter kit + multimeter. Solderless.</div>
+      <div class="tier"><b>$110–160</b>+ iron, solder, cutters, strippers, perfboard.</div>
+      <div class="tier"><b>$200–300</b>+ bench supply, better meter, storage, chassis kit.</div></div>`;
+    const hasRes=s.res&&s.res.length, hasF=s.focus&&s.focus.length;
+    h+=`<div class="cols" style="${hasRes&&hasF?"":"grid-template-columns:1fr"}">`;
+    if(hasRes) h+=`<div><h4>Resources</h4><ul class="res">${s.res.map(r=>`<li><a href="${r.u}" target="_blank" rel="noopener">${esc(r.t)}</a>${r.p?`<span class="price">${esc(r.p)}</span>`:""}${r.n?`<span class="note">${esc(r.n)}</span>`:""}</li>`).join("")}</ul></div>`;
+    if(hasF) h+=`<div><h4>Focus</h4><ul class="focus">${s.focus.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>`;
+    h+=`</div>`;
+    if(s.note) h+=`<div class="callout">${esc(s.note)}</div>`;
+    if(s.task){const k=`t${mi}_${si}`;h+=`<label class="task${state[k]?" done":""}"><input type="checkbox" data-k="${k}"${state[k]?" checked":""}><div><span class="lbl">Build →</span> ${esc(s.task)}</div></label>`;}
+    h+=`</div>`;
+  });
+  h+=`<div class="mile"><h4 style="margin-top:0">Month ${mi+1} milestone — you can…</h4>${m.mile.map((x,xi)=>{const k=`m${mi}_${xi}`;return `<label><input type="checkbox" data-k="${k}"${state[k]?" checked":""}>${esc(x)}</label>`}).join("")}</div></div></details>`;
+  host.insertAdjacentHTML("beforeend",h);
+});
+document.getElementById("jobs").innerHTML=JOBS.map(j=>`<div class="tier"><b>${j[0]}</b>${j[1]}</div>`).join("");
+document.getElementById("dirs").innerHTML=DIRS.map(d=>`<div class="tier dir"><b>${d[0]}</b><div class="small">${d[1]}</div>${d[2]}</div>`).join("");
+document.getElementById("xwalk").innerHTML=XWALK.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("");
+
+/* ---------- progress ---------- */
+function counts(mi){const boxes=[...document.querySelectorAll(`#m${mi+1} input[data-k]`)];return [boxes.filter(b=>b.checked).length,boxes.length]}
+function refresh(){
+  let d=0,t=0;
+  MONTHS.forEach((m,mi)=>{const [a,b]=counts(mi);d+=a;t+=b;document.querySelector(`.mprog[data-m="${mi}"]`).textContent=`${a}/${b} done`;
+    const arc=document.getElementById("arc"+mi); if(arc){arc.style.strokeDashoffset=String(1-(b?a/b:0));}});
+  document.getElementById("totalBar").style.width=(t?100*d/t:0)+"%";
+  document.getElementById("totalTxt").textContent=`${d} of ${t} builds and milestones checked`;
+}
+document.addEventListener("change",e=>{const k=e.target.dataset&&e.target.dataset.k;if(!k)return;state[k]=e.target.checked;save();
+  const t=e.target.closest(".task");if(t)t.classList.toggle("done",e.target.checked);refresh();});
+
+/* ---------- SVG map ---------- */
+(function(){
+  const svg=document.getElementById("map"), NS="http://www.w3.org/2000/svg";
+  const pts=[[90,200],[260,100],[430,200],[600,100],[770,200],[960,110]];
+  const short=["Electronics","Microcontrollers","CAD & making","ROS 2 & sim","The maths","Learning & jobs"];
+  const icons=["⚡","⚙","▲","⬡","∫","★"];
+  const build=["voltage divider","line follower","SO-101 arm","Nav2 robot","LQR / IK","ACT policy"];
+  let d=`M ${pts[0][0]} ${pts[0][1]}`;
+  for(let i=1;i<pts.length;i++){const [x0,y0]=pts[i-1],[x1,y1]=pts[i],mx=(x0+x1)/2;d+=` C ${mx} ${y0}, ${mx} ${y1}, ${x1} ${y1}`;}
+  const el=(n,a,p=svg)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e};
+  el("path",{d,fill:"none",stroke:"var(--line)","stroke-width":14,"stroke-linecap":"round"});
+  el("path",{d,fill:"none",stroke:"var(--muted)","stroke-width":2,"stroke-dasharray":"6 8"});
+  el("text",{x:20,y:310,fill:"var(--muted)","font-size":13}).textContent="Start: zero electronics";
+  el("text",{x:1060,y:310,fill:"var(--muted)","font-size":13,"text-anchor":"end"}).textContent="Hireable portfolio →";
+  pts.forEach(([x,y],i)=>{
+    const a=el("a",{href:"#m"+(i+1),class:"map-node"});
+    a.addEventListener("click",ev=>{ev.preventDefault();const det=document.getElementById("m"+(i+1));det.open=true;det.scrollIntoView({behavior:"smooth"});});
+    el("circle",{cx:x,cy:y,r:36,fill:"var(--panel)",stroke:"var(--line)","stroke-width":4,class:"ring"},a);
+    const arc=el("circle",{id:"arc"+i,cx:x,cy:y,r:36,fill:"none",stroke:"var(--ok)","stroke-width":5,pathLength:1,"stroke-dasharray":1,"stroke-dashoffset":1,transform:`rotate(-90 ${x} ${y})`},a);
+    el("circle",{cx:x,cy:y,r:27,fill:MONTHS[i].c},a);
+    el("text",{x,y:y+8,"text-anchor":"middle","font-size":22,fill:"#fff"},a).textContent=icons[i];
+    const up=y<150, ty=up?y-50:y+58;
+    el("text",{x,y:ty,"text-anchor":"middle","font-size":15,"font-weight":700,fill:"var(--ink)"},a).textContent=`M${i+1} · ${short[i]}`;
+    el("text",{x,y:ty+(up?-18:18),"text-anchor":"middle","font-size":12,fill:"var(--muted)"},a).textContent=`build: ${build[i]}`;
+  });
+})();
+refresh();
+</script>
+</body>
+</html>
